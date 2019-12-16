@@ -1,0 +1,9 @@
+# Rust artifacts
+**/target/
+**/**/*.rs.bk
+**/build
+**/proto
+**/Cargo.lock
+
+# Python artifacts
+**/**/__pycache__
