@@ -45,7 +45,7 @@ impl FromSql<Role, Pg> for RoleEnum {
 #[postgres(type_name = "organization_type")]
 pub struct OrganizationType;
 
-#[derive(Debug, PartialEq, FromSqlRow, AsExpression, Serialize, Clone)]
+#[derive(Debug, PartialEq, FromSqlRow, AsExpression, Serialize, Deserialize, Clone)]
 #[sql_type = "OrganizationType"]
 pub enum OrganizationTypeEnum {
     StandardsBody,
