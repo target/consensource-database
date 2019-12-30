@@ -1,7 +1,7 @@
 use custom_types::*;
 use tables_schema::*;
 
-#[derive(Queryable, Insertable, Serialize, Debug)]
+#[derive(Queryable, Insertable, Serialize, Deserialize, Debug)]
 pub struct Block {
     pub block_num: i64,
     pub block_id: String,
@@ -168,7 +168,7 @@ pub struct NewCertificateData {
     pub data: String,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, Clone)]
 pub struct User {
     pub public_key: String,
     pub transaction_id: String,
