@@ -18,7 +18,7 @@ pub struct Agent {
     pub timestamp: i64,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "agents"]
 pub struct NewAgent {
     pub start_block_num: i64,
@@ -39,7 +39,7 @@ pub struct Authorization {
     pub role: RoleEnum,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "authorizations"]
 pub struct NewAuthorization {
     pub start_block_num: i64,
@@ -64,7 +64,7 @@ pub struct Address {
     pub postal_code: Option<String>,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "addresses"]
 pub struct NewAddress {
     pub start_block_num: i64,
@@ -88,7 +88,7 @@ pub struct Organization {
     pub organization_type: OrganizationTypeEnum,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "organizations"]
 pub struct NewOrganization {
     pub start_block_num: i64,
@@ -109,7 +109,7 @@ pub struct Contact {
     pub language_code: String,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "contacts"]
 pub struct NewContact {
     pub start_block_num: i64,
@@ -134,7 +134,7 @@ pub struct Certificate {
     pub valid_to: i64,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "certificates"]
 pub struct NewCertificate {
     pub start_block_num: i64,
@@ -190,7 +190,7 @@ pub struct Request {
     pub request_date: i64,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "requests"]
 pub struct NewRequest {
     pub start_block_num: i64,
@@ -212,7 +212,7 @@ pub struct Standard {
     pub name: String,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "standards"]
 pub struct NewStandard {
     pub start_block_num: i64,
@@ -234,7 +234,7 @@ pub struct StandardVersion {
     pub approval_date: i64,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "standard_versions"]
 pub struct NewStandardVersion {
     pub start_block_num: i64,
@@ -274,7 +274,7 @@ pub struct Accreditation {
     pub valid_to: i64,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "accreditations"]
 pub struct NewAccreditation {
     pub start_block_num: i64,
