@@ -157,22 +157,6 @@ table! {
 }
 
 table! {
-    retailer_factories (id) {
-        id -> Int8,
-        factory_id -> Varchar,
-        factory_name -> Varchar,
-        contact_name -> Varchar,
-        contact_phone_number -> Varchar,
-        contact_language_code -> Varchar,
-        country -> Varchar,
-        state_province -> Varchar,
-        city -> Varchar,
-        street_line_1 -> Varchar,
-        street_line_2 -> Varchar,
-    }
-}
-
-table! {
     accreditations (id) {
         id -> Int8,
         start_block_num -> Int8,
@@ -200,6 +184,5 @@ allow_tables_to_appear_in_same_query!(
     contacts,
     standards,
     standard_versions,
-    retailer_factories,
     accreditations,
 );
