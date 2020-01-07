@@ -155,17 +155,3 @@ CREATE TABLE IF NOT EXISTS requests (
   status                      RequestStatus  NOT NULL,
   request_date                BIGINT         NOT NULL
 ) INHERITS (chain_record);
-
-CREATE TABLE IF NOT EXISTS retailer_factories (
-  id                          BIGSERIAL      PRIMARY KEY,
-  factory_id                  VARCHAR,
-  factory_name                VARCHAR,
-  contact_name                VARCHAR,
-  contact_phone_number        VARCHAR,
-  contact_language_code       VARCHAR,
-  country                     VARCHAR,
-  state_province              VARCHAR,
-  city                        VARCHAR,
-  street_line_1               VARCHAR,
-  street_line_2               VARCHAR
-)
