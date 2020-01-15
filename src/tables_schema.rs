@@ -15,8 +15,6 @@ table! {
 table! {
     users (public_key) {
         public_key -> Varchar,
-        transaction_id -> Varchar,
-        batch_id -> Varchar,
         encrypted_private_key -> Varchar,
         username -> Varchar,
         hashed_password -> Varchar,

@@ -171,8 +171,6 @@ pub struct NewCertificateData {
 #[derive(Queryable, Insertable, Clone)]
 pub struct User {
     pub public_key: String,
-    pub transaction_id: String,
-    pub batch_id: String,
     pub encrypted_private_key: String,
     pub username: String,
     pub hashed_password: String,
