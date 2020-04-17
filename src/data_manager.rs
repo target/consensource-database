@@ -27,6 +27,7 @@ pub enum OperationType {
     CreateCertificate(Vec<NewCertificate>),
     CreateRequest(Vec<NewRequest>),
     CreateStandard(Vec<(NewStandard, Vec<NewStandardVersion>)>),
+    CreateAssertion(Vec<NewAssertion>),
 }
 
 impl DataManager {
@@ -105,6 +106,7 @@ impl DataManager {
                 }
                 Ok(())
             }
+            OperationType::CreateAssertion(assertions) => self.insert_assertions(&assertions),
         }
     }
 
@@ -372,6 +374,30 @@ impl DataManager {
             .filter(accreditations::organization_id.eq(organization_id));
         diesel::update(modified_accreditations_query)
             .set(accreditations::end_block_num.eq(current_block_num))
+            .execute(&*self.conn)?;
+        Ok(())
+    }
+
+    fn insert_assertions(&self, assertions: &[NewAssertion]) -> Result<(), DatabaseError> {
+        for assertion in assertions {
+            self.update_assertion(&assertion.assertion_id, assertion.start_block_num)?;
+        }
+        diesel::insert_into(assertions::table)
+            .values(assertions)
+            .execute(&*self.conn)?;
+        Ok(())
+    }
+
+    fn update_assertion(
+        &self,
+        assertion_id: &str,
+        current_block_num: i64,
+    ) -> Result<(), DatabaseError> {
+        let modified_assertions_query = assertions::table
+            .filter(assertions::end_block_num.eq(MAX_BLOCK_NUM))
+            .filter(assertions::assertion_id.eq(assertion_id));
+        diesel::update(modified_assertions_query)
+            .set(assertions::end_block_num.eq(current_block_num))
             .execute(&*self.conn)?;
         Ok(())
     }

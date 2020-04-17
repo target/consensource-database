@@ -284,3 +284,27 @@ pub struct NewAccreditation {
     pub valid_from: i64,
     pub valid_to: i64,
 }
+
+#[derive(Queryable, Serialize)]
+pub struct Assertion {
+    pub id: i64,
+    pub start_block_num: i64,
+    pub end_block_num: i64,
+    pub assertion_id: String,
+    pub assertor_pub_key: String,
+    pub assertion_type: AssertionTypeEnum,
+    pub object_id: String,
+    pub data_id: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Queryable, Insertable)]
+#[table_name = "assertions"]
+pub struct NewAssertion {
+    pub start_block_num: i64,
+    pub end_block_num: i64,
+    pub assertion_id: String,
+    pub assertor_pub_key: String,
+    pub assertion_type: AssertionTypeEnum,
+    pub object_id: String,
+    pub data_id: Option<String>,
+}

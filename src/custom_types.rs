@@ -51,6 +51,7 @@ pub enum OrganizationTypeEnum {
     StandardsBody,
     CertifyingBody,
     Factory,
+    Ingestion,
     UnsetType,
 }
 
@@ -60,6 +61,7 @@ impl ToSql<OrganizationType, Pg> for OrganizationTypeEnum {
             OrganizationTypeEnum::CertifyingBody => out.write_all(b"CERTIFYING_BODY")?,
             OrganizationTypeEnum::StandardsBody => out.write_all(b"STANDARDS_BODY")?,
             OrganizationTypeEnum::Factory => out.write_all(b"FACTORY")?,
+            OrganizationTypeEnum::Ingestion => out.write_all(b"INGESTION")?,
             OrganizationTypeEnum::UnsetType => out.write_all(b"UNSET_TYPE")?,
         }
         Ok(IsNull::No)
@@ -72,6 +74,7 @@ impl FromSql<OrganizationType, Pg> for OrganizationTypeEnum {
             b"CERTIFYING_BODY" => Ok(OrganizationTypeEnum::CertifyingBody),
             b"STANDARDS_BODY" => Ok(OrganizationTypeEnum::StandardsBody),
             b"FACTORY" => Ok(OrganizationTypeEnum::Factory),
+            b"INGESTION" => Ok(OrganizationTypeEnum::Ingestion),
             b"UNSET" => Ok(OrganizationTypeEnum::UnsetType),
             _ => Err("Unrecognized enum variant".into()),
         }
@@ -115,6 +118,45 @@ impl FromSql<RequestStatus, Pg> for RequestStatusEnum {
             b"CLOSED" => Ok(RequestStatusEnum::Closed),
             b"CERTIFIED" => Ok(RequestStatusEnum::Certified),
             b"UNSET_STATUS" => Ok(RequestStatusEnum::UnsetStatus),
+            _ => Err("Unrecognized enum variant".into()),
+        }
+    }
+}
+
+// AssertionType
+
+#[derive(SqlType, QueryId)]
+#[postgres(type_name = "assertion_type")]
+pub struct AssertionType;
+
+#[derive(Debug, PartialEq, FromSqlRow, AsExpression, Serialize, Deserialize, Clone)]
+#[sql_type = "AssertionType"]
+pub enum AssertionTypeEnum {
+    Standard,
+    Certificate,
+    Factory,
+    UnsetType,
+}
+
+impl ToSql<AssertionType, Pg> for AssertionTypeEnum {
+    fn to_sql<W: Write>(&self, out: &mut Output<W, Pg>) -> serialize::Result {
+        match *self {
+            AssertionTypeEnum::Standard => out.write_all(b"STANDARD")?,
+            AssertionTypeEnum::Certificate => out.write_all(b"CERTIFICATE")?,
+            AssertionTypeEnum::Factory => out.write_all(b"FACTORY")?,
+            AssertionTypeEnum::UnsetType => out.write_all(b"UNSET_TYPE")?,
+        }
+        Ok(IsNull::No)
+    }
+}
+
+impl FromSql<AssertionType, Pg> for AssertionTypeEnum {
+    fn from_sql(bytes: Option<&[u8]>) -> deserialize::Result<Self> {
+        match not_none!(bytes) {
+            b"STANDARD" => Ok(AssertionTypeEnum::Standard),
+            b"CERTIFICATE" => Ok(AssertionTypeEnum::Certificate),
+            b"FACTORY" => Ok(AssertionTypeEnum::Factory),
+            b"UNSET" => Ok(AssertionTypeEnum::UnsetType),
             _ => Err("Unrecognized enum variant".into()),
         }
     }
