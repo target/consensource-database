@@ -13,17 +13,17 @@ pub struct DataManager {
     conn: DieselConnection,
 }
 
+type ExpandedOrganization = (
+    NewOrganization,
+    Option<Vec<NewAccreditation>>,
+    Option<NewAddress>,
+    Vec<NewAuthorization>,
+    Vec<NewContact>,
+);
+
 pub enum OperationType {
     CreateAgent(Vec<NewAgent>),
-    CreateOrganization(
-        Vec<(
-            NewOrganization,
-            Option<Vec<NewAccreditation>>,
-            Option<NewAddress>,
-            Vec<NewAuthorization>,
-            Vec<NewContact>,
-        )>,
-    ),
+    CreateOrganization(Vec<ExpandedOrganization>),
     CreateCertificate(Vec<NewCertificate>),
     CreateRequest(Vec<NewRequest>),
     CreateStandard(Vec<(NewStandard, Vec<NewStandardVersion>)>),
@@ -49,8 +49,7 @@ impl DataManager {
         let conn = &*self.conn;
         conn.transaction::<_, _, _>(|| {
             let block_in_db = self.get_block_if_exists(block.block_num)?;
-            if block_in_db.is_some() {
-                let block_in_db = block_in_db.unwrap();
+            if let Some(block_in_db) = block_in_db {
                 if self.is_fork(&block_in_db, block) {
                     self.drop_fork(block.block_num)?;
                     info!(
