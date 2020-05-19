@@ -13,20 +13,21 @@ pub struct DataManager {
     conn: DieselConnection,
 }
 
+type ExpandedOrganization = (
+    NewOrganization,
+    Option<Vec<NewAccreditation>>,
+    Option<NewAddress>,
+    Vec<NewAuthorization>,
+    Vec<NewContact>,
+);
+
 pub enum OperationType {
     CreateAgent(Vec<NewAgent>),
-    CreateOrganization(
-        Vec<(
-            NewOrganization,
-            Option<Vec<NewAccreditation>>,
-            Option<NewAddress>,
-            Vec<NewAuthorization>,
-            Vec<NewContact>,
-        )>,
-    ),
+    CreateOrganization(Vec<ExpandedOrganization>),
     CreateCertificate(Vec<NewCertificate>),
     CreateRequest(Vec<NewRequest>),
     CreateStandard(Vec<(NewStandard, Vec<NewStandardVersion>)>),
+    CreateAssertion(Vec<NewAssertion>),
 }
 
 impl DataManager {
@@ -48,8 +49,7 @@ impl DataManager {
         let conn = &*self.conn;
         conn.transaction::<_, _, _>(|| {
             let block_in_db = self.get_block_if_exists(block.block_num)?;
-            if block_in_db.is_some() {
-                let block_in_db = block_in_db.unwrap();
+            if let Some(block_in_db) = block_in_db {
                 if self.is_fork(&block_in_db, block) {
                     self.drop_fork(block.block_num)?;
                     info!(
@@ -105,6 +105,7 @@ impl DataManager {
                 }
                 Ok(())
             }
+            OperationType::CreateAssertion(assertions) => self.insert_assertions(&assertions),
         }
     }
 
@@ -372,6 +373,30 @@ impl DataManager {
             .filter(accreditations::organization_id.eq(organization_id));
         diesel::update(modified_accreditations_query)
             .set(accreditations::end_block_num.eq(current_block_num))
+            .execute(&*self.conn)?;
+        Ok(())
+    }
+
+    fn insert_assertions(&self, assertions: &[NewAssertion]) -> Result<(), DatabaseError> {
+        for assertion in assertions {
+            self.update_assertion(&assertion.assertion_id, assertion.start_block_num)?;
+        }
+        diesel::insert_into(assertions::table)
+            .values(assertions)
+            .execute(&*self.conn)?;
+        Ok(())
+    }
+
+    fn update_assertion(
+        &self,
+        assertion_id: &str,
+        current_block_num: i64,
+    ) -> Result<(), DatabaseError> {
+        let modified_assertions_query = assertions::table
+            .filter(assertions::end_block_num.eq(MAX_BLOCK_NUM))
+            .filter(assertions::assertion_id.eq(assertion_id));
+        diesel::update(modified_assertions_query)
+            .set(assertions::end_block_num.eq(current_block_num))
             .execute(&*self.conn)?;
         Ok(())
     }

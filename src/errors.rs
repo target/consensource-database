@@ -35,13 +35,6 @@ impl std::fmt::Display for DatabaseError {
 }
 
 impl std::error::Error for DatabaseError {
-    fn description(&self) -> &str {
-        match *self {
-            DatabaseError::ConnError(ref err) => err.description(),
-            DatabaseError::TransactionError(ref err) => err.description(),
-        }
-    }
-
     fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             DatabaseError::ConnError(ref err) => Some(err),

@@ -168,6 +168,21 @@ table! {
     }
 }
 
+table! {
+    use diesel::sql_types::*;
+    use super::AssertionType;
+    assertions (id) {
+        id -> Int8,
+        assertion_id -> VarChar,
+        start_block_num -> Int8,
+        end_block_num -> Int8,
+        assertor_pub_key -> VarChar,
+        assertion_type -> AssertionType,
+        object_id -> VarChar,
+        data_id -> Nullable<VarChar>,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     addresses,
     agents,
@@ -183,4 +198,5 @@ allow_tables_to_appear_in_same_query!(
     standards,
     standard_versions,
     accreditations,
+    assertions,
 );

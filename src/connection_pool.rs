@@ -28,7 +28,7 @@ pub struct ConnectionPool {
 impl ConnectionPool {
     pub fn connect(dsn: &str) -> Result<ConnectionPool, DatabaseError> {
         let full_dsn = String::from("postgres://") + dsn;
-        let manager = ConnectionManager::<PgConnection>::new(full_dsn.clone());
+        let manager = ConnectionManager::<PgConnection>::new(full_dsn);
 
         let cp = ConnectionPool {
             pool: r2d2::Pool::builder().build(manager)?,
