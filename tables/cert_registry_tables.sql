@@ -163,5 +163,6 @@ CREATE TABLE IF NOT EXISTS assertions (
   data_id                     VARCHAR
 ) INHERITS (chain_record);
 
+CREATE INDEX IF NOT EXISTS assertions_id_index ON assertions (assertion_id);
 CREATE INDEX IF NOT EXISTS assertions_object_id_index ON assertions (object_id);
 CREATE INDEX IF NOT EXISTS assertions_block_index ON assertions (end_block_num);
