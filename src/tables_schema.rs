@@ -173,9 +173,9 @@ table! {
     use super::AssertionType;
     assertions (id) {
         id -> Int8,
-        assertion_id -> VarChar,
         start_block_num -> Int8,
         end_block_num -> Int8,
+        assertion_id -> VarChar,
         assertor_pub_key -> VarChar,
         assertion_type -> AssertionType,
         object_id -> VarChar,
