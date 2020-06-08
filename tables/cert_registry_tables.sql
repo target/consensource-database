@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS assertions (
   id                          BIGSERIAL      PRIMARY KEY,
   assertion_id                VARCHAR        NOT NULL,
   assertor_pub_key            VARCHAR        NOT NULL,
-  type                        AssertionType  NOT NULL,
+  assertion_type              AssertionType  NOT NULL,
   object_id                   VARCHAR        NOT NULL,
   data_id                     VARCHAR
 ) INHERITS (chain_record);
