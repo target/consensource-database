@@ -64,6 +64,32 @@ pub struct Address {
     pub postal_code: Option<String>,
 }
 
+type AddressColumns = (
+    addresses::id,
+    addresses::start_block_num,
+    addresses::end_block_num,
+    addresses::organization_id,
+    addresses::street_line_1,
+    addresses::street_line_2,
+    addresses::city,
+    addresses::state_province,
+    addresses::country,
+    addresses::postal_code,
+);
+
+pub const ADDRESS_COLUMNS: AddressColumns = (
+    addresses::id,
+    addresses::start_block_num,
+    addresses::end_block_num,
+    addresses::organization_id,
+    addresses::street_line_1,
+    addresses::street_line_2,
+    addresses::city,
+    addresses::state_province,
+    addresses::country,
+    addresses::postal_code,
+);
+
 #[derive(Debug, PartialEq, Queryable, Insertable)]
 #[table_name = "addresses"]
 pub struct NewAddress {

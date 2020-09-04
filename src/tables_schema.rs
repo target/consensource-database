@@ -68,6 +68,8 @@ table! {
 }
 
 table! {
+    use diesel_full_text_search::{TsVector as Tsvector};
+    use diesel::sql_types::*;
     addresses (id) {
         id -> Int8,
         start_block_num -> Int8,
@@ -79,6 +81,7 @@ table! {
         state_province -> Nullable<Varchar>,
         country -> Varchar,
         postal_code -> Nullable<Varchar>,
+        text_searchable_address_col -> Tsvector,
     }
 }
 
