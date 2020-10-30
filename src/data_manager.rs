@@ -28,6 +28,7 @@ pub enum OperationType {
     CreateRequest(Vec<NewRequest>),
     CreateStandard(Vec<(NewStandard, Vec<NewStandardVersion>)>),
     CreateAssertion(Vec<NewAssertion>),
+    DeleteAssertion(Vec<NewAssertion>),
 }
 
 impl DataManager {
@@ -106,6 +107,7 @@ impl DataManager {
                 Ok(())
             }
             OperationType::CreateAssertion(assertions) => self.insert_assertions(&assertions),
+            OperationType::DeleteAssertion(assertions) => self.update_assertions(&assertions),
         }
     }
 
@@ -398,6 +400,13 @@ impl DataManager {
         diesel::update(modified_assertions_query)
             .set(assertions::end_block_num.eq(current_block_num))
             .execute(&*self.conn)?;
+        Ok(())
+    }
+
+    fn update_assertions(&self, assertions: &[NewAssertion]) -> Result<(), DatabaseError> {
+        for assertion in assertions {
+            self.update_assertion(&assertion.assertion_id, assertion.start_block_num)?;
+        }
         Ok(())
     }
 
