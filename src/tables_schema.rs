@@ -179,6 +179,7 @@ table! {
         start_block_num -> Int8,
         end_block_num -> Int8,
         assertion_id -> VarChar,
+        address -> VarChar,
         assertor_pub_key -> VarChar,
         assertion_type -> AssertionType,
         object_id -> VarChar,

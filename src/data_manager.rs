@@ -28,7 +28,7 @@ pub enum OperationType {
     CreateRequest(Vec<NewRequest>),
     CreateStandard(Vec<(NewStandard, Vec<NewStandardVersion>)>),
     CreateAssertion(Vec<NewAssertion>),
-    DeleteAssertion(Vec<NewAssertion>),
+    DeleteAssertion(String, i64),
 }
 
 impl DataManager {
@@ -107,7 +107,9 @@ impl DataManager {
                 Ok(())
             }
             OperationType::CreateAssertion(assertions) => self.insert_assertions(&assertions),
-            OperationType::DeleteAssertion(assertions) => self.update_assertions(&assertions),
+            OperationType::DeleteAssertion(address, current_block_num) => {
+                self.delete_assertion(&address, current_block_num)
+            }
         }
     }
 
@@ -403,10 +405,13 @@ impl DataManager {
         Ok(())
     }
 
-    fn update_assertions(&self, assertions: &[NewAssertion]) -> Result<(), DatabaseError> {
-        for assertion in assertions {
-            self.update_assertion(&assertion.assertion_id, assertion.start_block_num)?;
-        }
+    fn delete_assertion(&self, address: &str, current_block_num: i64) -> Result<(), DatabaseError> {
+        let assertions_query = assertions::table
+            .filter(assertions::end_block_num.eq(MAX_BLOCK_NUM))
+            .filter(assertions::address.eq(address));
+        diesel::update(assertions_query)
+            .set(assertions::end_block_num.eq(current_block_num))
+            .execute(&*self.conn)?;
         Ok(())
     }
 
