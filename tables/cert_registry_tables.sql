@@ -1,4 +1,7 @@
 
+-- Add pg_trgm extension for similarity index searches
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 -- Create custom types
 
 CREATE TYPE Role AS ENUM ('ADMIN', 'TRANSACTOR', 'UNSET_ROLE');
@@ -100,17 +103,33 @@ CREATE TABLE IF NOT EXISTS addresses (
   state_province     VARCHAR,
   country            VARCHAR     NOT NULL,
   postal_code        VARCHAR,
-  text_searchable_address_col   TSVECTOR
+  text_searchable_address_col   TSVECTOR,
+  full_address       VARCHAR
 ) INHERITS (chain_record);
 
 CREATE INDEX IF NOT EXISTS addresses_organization_id_index ON addresses (organization_id);
 CREATE INDEX IF NOT EXISTS addresses_block_index ON addresses (end_block_num);
 CREATE INDEX IF NOT EXISTS address_text_search ON addresses USING GIN (text_searchable_address_col);
+CREATE INDEX addresses_city_trgm_idx ON addresses USING GIST (city gist_trgm_ops);
+CREATE INDEX addresses_state_trgm_idx ON addresses USING GIST (state_province gist_trgm_ops);
+CREATE INDEX addresses_country_trgm_idx ON addresses USING GIST (country gist_trgm_ops);
+CREATE INDEX addresses_full_address_idx ON addresses USING GIST (full_address gist_trgm_ops);
 
 CREATE TRIGGER tsvectorupdateaddresses BEFORE INSERT OR UPDATE
 ON addresses FOR EACH ROW EXECUTE PROCEDURE
 tsvector_update_trigger(text_searchable_address_col, 'pg_catalog.english',
   street_line_1, street_line_2, city, state_province, country, postal_code);
+
+CREATE OR REPLACE FUNCTION full_address_update_trigger() RETURNS TRIGGER AS $full_address_update_trigger$
+  BEGIN
+    NEW.full_address = NEW.city || ' ' || NEW.state_province || ' ' || NEW.country || ' ' || NEW.postal_code;
+    RETURN NEW;
+  END;
+$full_address_update_trigger$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER updatefulladdresses BEFORE INSERT OR UPDATE
+ON addresses FOR EACH ROW EXECUTE PROCEDURE
+full_address_update_trigger();
 
 CREATE TABLE IF NOT EXISTS certificate_data (
   id                         BIGSERIAL   PRIMARY KEY,

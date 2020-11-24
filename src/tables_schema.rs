@@ -82,6 +82,7 @@ table! {
         country -> Varchar,
         postal_code -> Nullable<Varchar>,
         text_searchable_address_col -> Tsvector,
+        full_address -> Nullable<Varchar>,
     }
 }
 
