@@ -1,3 +1,6 @@
+-------------------------------
+-- ConsenSource database tables
+-------------------------------
 
 -- Add pg_trgm extension for similarity index searches
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
