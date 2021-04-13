@@ -95,6 +95,7 @@ pub enum RequestStatusEnum {
     Closed,
     Certified,
     UnsetStatus,
+    PreCertified,
 }
 
 impl ToSql<RequestStatus, Pg> for RequestStatusEnum {
@@ -105,6 +106,7 @@ impl ToSql<RequestStatus, Pg> for RequestStatusEnum {
             RequestStatusEnum::Closed => out.write_all(b"CLOSED")?,
             RequestStatusEnum::Certified => out.write_all(b"CERTIFIED")?,
             RequestStatusEnum::UnsetStatus => out.write_all(b"UNSET_STATUS")?,
+            RequestStatusEnum::PreCertified => out.write_all(b"PRE_CERTIFIED")?,
         }
         Ok(IsNull::No)
     }
@@ -118,6 +120,7 @@ impl FromSql<RequestStatus, Pg> for RequestStatusEnum {
             b"CLOSED" => Ok(RequestStatusEnum::Closed),
             b"CERTIFIED" => Ok(RequestStatusEnum::Certified),
             b"UNSET_STATUS" => Ok(RequestStatusEnum::UnsetStatus),
+            b"PRE_CERTIFIED" => Ok(RequestStatusEnum::PreCertified),
             _ => Err("Unrecognized enum variant".into()),
         }
     }
